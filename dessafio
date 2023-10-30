@@ -1,0 +1,93 @@
+// implementacao do codigo do desafio
+
+@Entity
+data class Customer(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    val firstName: String,
+    val lastName: String,
+    val cpf: String,
+    val income: Double,
+    val email: String,
+    val password: String,
+    val zipCode: String,
+    val street: String
+)
+
+@Entity
+data class Credit(
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long? = null,
+    val creditValue: Double,
+    val dayFirstOfInstallment: Int,
+    val numberOfInstallments: Int,
+    val status: String,
+    val customer: Customer
+)
+Controladores para Customer e Credit:
+kotlin
+Copy code
+@RestController
+@RequestMapping("/api/customers")
+class CustomerController(private val customerService: CustomerService) {
+
+    @PostMapping
+    fun createCustomer(@RequestBody customer: Customer): ResponseEntity<String> {
+        val customerId = customerService.createCustomer(customer)
+        return ResponseEntity("Customer created with ID: $customerId", HttpStatus.CREATED)
+    }
+
+   
+}
+
+@RestController
+@RequestMapping("/api/credits")
+class CreditController(private val creditService: CreditService) {
+
+    @PostMapping
+    fun applyForCredit(@RequestBody credit: Credit): ResponseEntity<String> {
+        val creditCode = creditService.applyForCredit(credit)
+        return ResponseEntity("Credit application submitted with code: $creditCode", HttpStatus.CREATED)
+    }
+
+
+}
+Serviços para Customer e Credit:
+kotlin
+Copy code
+@Service
+class CustomerService(private val customerRepository: CustomerRepository) {
+
+    fun createCustomer(customer: Customer): Long {
+        // Implement the logic to create a customer
+        // Ensure that customer data is saved in the database
+    }
+
+   
+}
+
+@Service
+class CreditService(private val creditRepository: CreditRepository) {
+
+    fun applyForCredit(credit: Credit): String {
+        if (credit.numberOfInstallments < 1 || credit.numberOfInstallments > 48) {
+            throw IllegalArgumentException("Número de parcelas deve estar entre 1 e 48.")
+        }
+
+        val currentDate = LocalDate.now()
+        val threeMonthsFromNow = currentDate.plusMonths(3)
+
+        if (credit.dayFirstOfInstallment < currentDate.dayOfMonth || threeMonthsFromNow.isBefore(credit.dayFirstOfInstallment)) {
+            throw IllegalArgumentException("A data da primeira parcela deve ser no máximo 3 meses após o dia atual.")
+        }
+
+        // Implement the logic to create a credit application
+        // Ensure that credit data is saved in the database and generate a credit code
+
+        val creditCode = "ABC123" // Replace with a real code
+
+        return creditCode
+    }
+
+  
+}
