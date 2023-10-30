@@ -1,0 +1,38 @@
+public class Singleton {
+    // A instância única do Singleton
+    private static Singleton instance;
+
+    // Construtor privado para evitar a criação de instâncias diretas
+    private Singleton() {
+    }
+
+    // Método público para obter a instância única do Singleton
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    // Métodos da instância
+    public void doSomething() {
+        System.out.println("Singleton está fazendo algo.");
+    }
+}
+
+public class SingletonExample {
+    public static void main(String[] args) {
+        // Obtendo a instância única do Singleton
+        Singleton singleton = Singleton.getInstance();
+
+        // Realizando ação com o Singleton
+        singleton.doSomething();
+
+        // Tentando criar uma nova instância, o que não é permitido
+        // Singleton singleton2 = new Singleton(); // Isso gera um erro
+
+        // Verificando que as duas variáveis se referem à mesma instância
+        System.out.println(singleton == Singleton.getInstance()); // Deve imprimir true
+    }
+}
+
